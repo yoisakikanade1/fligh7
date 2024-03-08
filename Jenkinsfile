@@ -15,7 +15,15 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/yoisakikanade1/fligh7.git'
+                checkout scm
+            }
+            post {
+                failure {
+                    echo 'repository checkout failure'
+                }
+                success {
+                    echo 'repository checkout success'
+                }
             }
         }
         stage('Build and Push Docker Image') {
