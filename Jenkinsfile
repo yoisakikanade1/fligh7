@@ -10,7 +10,7 @@ pipeline {
         CLUSTER_NAME_1 = 'my-cluster-seoul-1'
         CLUSTER_NAME_2 = 'my-cluster-tokyo-1'
         ARTIFACT_REPO = 'asia-northeast3-docker.pkg.dev/fligh7/fligh7-image'
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('fligh7-a8c1b4c708f2.json').toString()
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('yoisakikanade1')
     }
   
     stages {
@@ -67,7 +67,7 @@ pipeline {
                     // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
                     def dockerImageTag = "asia-northeast3-docker.pkg.dev/${ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
                     sh "docker tag ${dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}"
-                    withCredentials([file(credentialsId: 'GOOGLE_APPLICATION_CREDENTIALS', variable: 'GOOGLE_APPLICATION_CREDENTIALS_JSON')]) {
+                    withCredentials([file(credentialsId: 'GOOGLE_APPLICATION_CREDENTIALS', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
                         sh "docker push ${dockerImageTag}"
                     }
                 }
