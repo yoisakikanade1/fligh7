@@ -46,25 +46,20 @@ pipeline {
         stage('Docker Image Push') {
             steps {
                 withDockerRegistry([ credentialsId: dockerHubRegistryCredential, url: ""]) {
-                    sh "docker push ${dockerHubRegistry}:${currentBuild.number}"
+                    sh "docker push ${dockerHubRegistry}:${BUILD_NUMBER}"
                     sh "docker push ${dockerHubRegistry}:latest"
-
-                    sleep 10 /* Wait uploading */
                 }
-            }    
+            }
             post {
-                failure {
-                    echo 'Docker Image Push failure !'
-                    sh "docker rmi ${dockerHubRegistry}:${currentBuild.number}"
-                    sh "docker rmi ${dockerHubRegistry}:latest"
-                }
                 success {
-                    echo 'Docker image push success !'
-                    sh "docker rmi ${dockerHubRegistry}:${currentBuild.number}"
-                    sh "docker rmi ${dockerHubRegistry}:latest"
+                    echo 'Docker image push success!'
+                }
+                failure {
+                    echo 'Docker image push failure!'
                 }
             }
         }   
+        
         stage('Update Artifact Registry') {
             steps {
                 sh "docker tag $dockerHubRegistry asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}"
