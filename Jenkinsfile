@@ -65,7 +65,7 @@ pipeline {
             steps {
                 script {
                     // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
-                    def dockerImageTag = "asia-northeast3-docker.pkg.dev/${ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
+                    def dockerImageTag = "${ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
                     sh "docker tag ${dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}"
                     withCredentials([file(credentialsId: gcpCredential, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
                         sh "docker push ${dockerImageTag}"
