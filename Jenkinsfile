@@ -72,13 +72,14 @@ pipeline {
                     }
                 }
             }
-        }
-        post {
-            success {
-                echo 'Update Artifact Registry success!'
-            }
-            failure {
-                echo 'Update Artifact Registry failure!'
+        
+            post {
+                success {
+                    echo 'Update Artifact Registry success!'
+                }
+                failure {
+                    echo 'Update Artifact Registry failure!'
+                }
             }
         }
         
