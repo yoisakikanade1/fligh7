@@ -43,7 +43,7 @@ pipeline {
             }
         }
 
-        stage('Docker Image Push')
+        stage('Docker Image Push') {
             steps {
                 withDockerRegistry([ credentialsId: dockerHubRegistryCredential, url: ""]) {
                     sh "docker push ${dockerHubRegistry}:${currentBuild.number}"
@@ -51,7 +51,7 @@ pipeline {
 
                     sleep 10 /* Wait uploading */
                 }
-            }
+            }    
             post {
                 failure {
                     echo 'Docker Image Push failure !'
@@ -64,6 +64,7 @@ pipeline {
                     sh "docker rmi ${dockerHubRegistry}:latest"
                 }
             }
+        }   
         stage('Update Artifact Registry') {
             steps {
                 sh "docker tag $dockerHubRegistry $ARTIFACT_REPO"
