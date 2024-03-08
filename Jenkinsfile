@@ -11,6 +11,7 @@ pipeline {
         CLUSTER_NAME_1 = 'my-cluster-seoul-1'
         CLUSTER_NAME_2 = 'my-cluster-tokyo-1'
         ARTIFACT_REPO = 'asia-northeast3-docker.pkg.dev/fligh7/fligh7-image'
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('yoisakikanade1')
     }
   
     stages {
@@ -68,8 +69,10 @@ pipeline {
                     def dockerImageTag = "${ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
                     sh "docker tag ${dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}"
                     withCredentials([file(credentialsId: gcpCredential, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-                        sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
-                        sh "docker push ${dockerImageTag}"
+                        withEnv(["GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}"]) {
+                            sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
+                            sh "docker push ${dockerImageTag}"
+                        }
                     }
                 }
             }
