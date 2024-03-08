@@ -51,19 +51,39 @@ pipeline {
                 }
             }
             post {
-                    failure {
-                      echo 'Docker Image Push failure !'
-                      sh "docker rmi ${dockerHubRegistry}:${currentBuild.number}"
-                      sh "docker rmi ${dockerHubRegistry}:latest"
-                    }
-                    success {
-                      echo 'Docker image push success !'
-                      sh "docker rmi ${dockerHubRegistry}:${currentBuild.number}"
-                      sh "docker rmi ${dockerHubRegistry}:latest"
-                    }
+                success {
+                    echo 'Docker image push success!'
+                }
+                failure {
+                    echo 'Docker image push failure!'
+                }
             }
         }   
 
+    
+        stages {
+            stage('Build and Push Docker Image') {
+                steps {
+                    script {
+                        def dockerImageTag = "asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}"
+                        docker.build(dockerImageTag, "-f Dockerfile .")
+                        docker.withRegistry('https://asia-northeast3-docker.pkg.dev', 'yoisakikanade1') {
+                            docker.image(dockerImageTag).push()
+                        }
+                    }
+                }
+            }
+        }
+    
+        post {
+            success {
+                echo 'Update Artifact Registry success!'
+            }
+            failure {
+                echo 'Update Artifact Registry failure!'
+            }
+        }
+        
         stage('Deploy to GKE 1') {
             steps {
                 sh "gcloud container clusters get-credentials $CLUSTER_NAME_1 --zone $GCP_ZONE_1 --project $PROJECT_ID"
