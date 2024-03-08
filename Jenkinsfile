@@ -68,6 +68,7 @@ pipeline {
                     def dockerImageTag = "${ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
                     sh "docker tag ${dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}"
                     withCredentials([file(credentialsId: gcpCredential, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                        sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
                         sh "docker push ${dockerImageTag}"
                     }
                 }
