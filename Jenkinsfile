@@ -51,35 +51,29 @@ pipeline {
                 }
             }
             post {
-                success {
-                    echo 'Docker image push success!'
-                }
-                failure {
-                    echo 'Docker image push failure!'
-                }
+                    failure {
+                      echo 'Docker Image Push failure !'
+                      sh "docker rmi ${dockerHubRegistry}:${currentBuild.number}"
+                      sh "docker rmi ${dockerHubRegistry}:latest"
+                    }
+                    success {
+                      echo 'Docker image push success !'
+                      sh "docker rmi ${dockerHubRegistry}:${currentBuild.number}"
+                      sh "docker rmi ${dockerHubRegistry}:latest"
+                    }
             }
         }   
-        
-        stage('Update Artifact Registry') {
-            steps {
-                withCredentials([googleServiceAccountCredentials(credentialsId: 'yoisakikanade1', jsonKeyFileVariable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-                    sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
-                    sh "docker tag ${dockerHubRegistry}:latest asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}"
-                    sh "docker push asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}"
-                }
-            }
-        }
 
         stage('Deploy to GKE 1') {
             steps {
                 sh "gcloud container clusters get-credentials $CLUSTER_NAME_1 --zone $GCP_ZONE_1 --project $PROJECT_ID"
-                sh "kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=$ARTIFACT_REPO"
+                sh "kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=$dockerHubRegistry:$BUILD_NUMBER"
             }
         }
         stage('Deploy to GKE 2') {
             steps {
                 sh "gcloud container clusters get-credentials $CLUSTER_NAME_2 --zone $GCP_ZONE_2 --project $PROJECT_ID"
-                sh "kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=$ARTIFACT_REPO"
+                sh "kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=$dockerHubRegistry:$BUILD_NUMBER"
             }
         }
     }
