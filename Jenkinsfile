@@ -26,6 +26,15 @@ pipeline {
                 }
             }
         }
+
+        stage('Install and Configure gcloud') {
+            steps {
+                script {
+                    sh "curl https://sdk.cloud.google.com | bash -s -- --disable-prompts --install-dir=${GCLOUD_SDK_PATH}"
+                    sh "${GCLOUD_SDK_PATH}/bin/gcloud auth configure-docker --quiet"
+                }
+            }
+        }
         stage('Build and Push Docker Image') {
             steps {
                 sh 'gcloud auth configure-docker --quiet'
