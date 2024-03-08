@@ -62,11 +62,12 @@ pipeline {
         
         stage('Update Artifact Registry') {
             steps {
-                sh "docker tag $dockerHubRegistry asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}"
-                sh "docker push asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}"
+                sh "docker pull ${dockerHubRegistry}:latest" // 최신 이미지를 가져옵니다.
+                sh "docker tag ${dockerHubRegistry}:latest asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}" // 가져온 이미지를 새로운 태그로 다시 태깅합니다.
+                sh "docker push asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}" // 새로운 태그로 이미지를 Google Artifact Registry에 푸시합니다.
             }
         }
-        
+   
         stage('Deploy to GKE 1') {
             steps {
                 sh "gcloud container clusters get-credentials $CLUSTER_NAME_1 --zone $GCP_ZONE_1 --project $PROJECT_ID"
