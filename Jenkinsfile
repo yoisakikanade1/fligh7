@@ -27,7 +27,7 @@ pipeline {
             }
         }
 
-        stage('Build and Push Docker Image') {
+        stage('Build and Push Docker Image to Docker Hub') {
             steps {
                 sh "docker build . -t ${dockerHubRegistry}:${currentBuild.number}"
                 sh "docker build . -t ${dockerHubRegistry}:latest"
@@ -43,7 +43,7 @@ pipeline {
             }
         }
 
-        stage('Docker Image Push') {
+        stage('Docker Image Push to Docker Hub') {
             steps {
                 withDockerRegistry([ credentialsId: dockerHubRegistryCredential, url: ""]) {
                     sh "docker push ${dockerHubRegistry}:${BUILD_NUMBER}"
@@ -52,20 +52,18 @@ pipeline {
             }
             post {
                 success {
-                    echo 'Docker image push success!'
+                    echo 'Docker image push to Docker Hub success!'
                 }
                 failure {
-                    echo 'Docker image push failure!'
+                    echo 'Docker image push to Docker Hub failure!'
                 }
             }
         }   
 
-    
-       
-        stage('Build and Push Docker Image') {
+        stage('Update Artifact Registry') {
             steps {
                 script {
-                    def dockerImageTag = "asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}"
+                    def dockerImageTag = "${ARTIFACT_REPO}/yoisakikanade/fligh7:${BUILD_NUMBER}"
                     docker.build(dockerImageTag, "-f Dockerfile .")
                     docker.withRegistry('https://asia-northeast3-docker.pkg.dev', 'yoisakikanade1') {
                         docker.image(dockerImageTag).push()
@@ -82,17 +80,17 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Deploy to GKE 1') {
             steps {
                 sh "gcloud container clusters get-credentials $CLUSTER_NAME_1 --zone $GCP_ZONE_1 --project $PROJECT_ID"
-                sh "kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=$dockerHubRegistry:$BUILD_NUMBER"
+                sh "kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=${dockerHubRegistry}:${BUILD_NUMBER}"
             }
         }
         stage('Deploy to GKE 2') {
             steps {
                 sh "gcloud container clusters get-credentials $CLUSTER_NAME_2 --zone $GCP_ZONE_2 --project $PROJECT_ID"
-                sh "kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=$dockerHubRegistry:$BUILD_NUMBER"
+                sh "kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=${dockerHubRegistry}:${BUILD_NUMBER}"
             }
         }
     }
