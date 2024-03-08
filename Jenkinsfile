@@ -68,7 +68,7 @@ pipeline {
                     def dockerImageTag = "asia-northeast3-docker.pkg.dev/${ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
                     sh "docker tag ${dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}"
                     withCredentials([file(credentialsId: 'GOOGLE_APPLICATION_CREDENTIALS', variable: 'GOOGLE_APPLICATION_CREDENTIALS_JSON')]) {
-                        sh "DOCKER_CONFIG=${env.HOME}/.docker/google-config docker --config ${env.HOME}/.docker push ${dockerImageTag}"
+                        sh "docker push ${dockerImageTag}"
                     }
                 }
             }
