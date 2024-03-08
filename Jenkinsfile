@@ -67,10 +67,11 @@ pipeline {
         }   
         stage('Update Artifact Registry') {
             steps {
-                sh "docker tag $dockerHubRegistry $ARTIFACT_REPO"
-                sh "docker push $ARTIFACT_REPO"
+                sh "docker tag $dockerHubRegistry asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}"
+                sh "docker push asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}"
             }
         }
+        
         stage('Deploy to GKE 1') {
             steps {
                 sh "gcloud container clusters get-credentials $CLUSTER_NAME_1 --zone $GCP_ZONE_1 --project $PROJECT_ID"
