@@ -61,18 +61,19 @@ pipeline {
             }
         }   
 
-            stage('Tag and Push to Artifact Registry') {
-                steps {
-                    script {
-                        // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
-                        def dockerImageTag = "asia-northeast3-docker.pkg.dev/${ARTIFACT_REPO}/yoisakikanade/fligh7:${BUILD_NUMBER}"
-                        sh "docker tag ${dockerHubRegistry}:${BUILD_NUMBER} ${dockerImageTag}"
-                        withCredentials([file(credentialsId: 'GOOGLE_APPLICATION_CREDENTIALS', variable: 'GOOGLE_APPLICATION_CREDENTIALS_JSON')]) {
-                            sh "DOCKER_CONFIG=${env.HOME}/.docker/google-config docker --config ${env.HOME}/.docker push ${dockerImageTag}"
-                        }
+        stage('Tag and Push to Artifact Registry') {
+            steps {
+                script {
+                    // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
+                    def dockerImageTag = "asia-northeast3-docker.pkg.dev/${ARTIFACT_REPO}/yoisakikanade/fligh7:${BUILD_NUMBER}"
+                    sh "docker tag ${dockerHubRegistry}:${BUILD_NUMBER} ${dockerImageTag}"
+                    withCredentials([file(credentialsId: 'GOOGLE_APPLICATION_CREDENTIALS', variable: 'GOOGLE_APPLICATION_CREDENTIALS_JSON')]) {
+                        sh "DOCKER_CONFIG=${env.HOME}/.docker/google-config docker --config ${env.HOME}/.docker push ${dockerImageTag}"
                     }
                 }
             }
+        }
+
             post {
                 success {
                     echo 'Tag and push to Artifact Registry success!'
