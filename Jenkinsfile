@@ -10,6 +10,7 @@ pipeline {
         CLUSTER_NAME_1 = 'my-cluster-seoul-1'
         CLUSTER_NAME_2 = 'my-cluster-tokyo-1'
         ARTIFACT_REPO = 'asia-northeast3-docker.pkg.dev/fligh7/fligh7-image'
+        GOOGLE_CREDENTIALS_ID = 'yoisakikanade1' 
     }
   
     stages {
@@ -65,7 +66,7 @@ pipeline {
                 script {
                     def dockerImageTag = "${ARTIFACT_REPO}/yoisakikanade/fligh7:${BUILD_NUMBER}"
                     docker.build(dockerImageTag, "-f Dockerfile .")
-                    docker.withRegistry('https://asia-northeast3-docker.pkg.dev', 'yoisakikanade1') {
+                    docker.withRegistry('https://asia-northeast3-docker.pkg.dev', GOOGLE_CREDENTIALS_ID) {
                         docker.image(dockerImageTag).push()
                     }
                 }
