@@ -62,11 +62,14 @@ pipeline {
         
         stage('Update Artifact Registry') {
             steps {
-                sh "docker pull ${dockerHubRegistry}:latest" // 최신 이미지를 가져옵니다.
-                sh "docker tag ${dockerHubRegistry}:latest asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}" // 가져온 이미지를 새로운 태그로 다시 태깅합니다.
-                sh "docker push asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}" // 새로운 태그로 이미지를 Google Artifact Registry에 푸시합니다.
+                withCredentials([googleServiceAccountCredentials(credentialsId: 'yoisakikanade1', jsonKeyFileVariable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                    sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
+                    sh "docker tag ${dockerHubRegistry}:latest asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}"
+                    sh "docker push asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}"
+                }
             }
         }
+
    
         stage('Deploy to GKE 1') {
             steps {
