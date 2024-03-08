@@ -67,8 +67,9 @@ pipeline {
                     // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
                     def dockerImageTag = "${ARTIFACT_REPO}/yoisakikanade/fligh7:${BUILD_NUMBER}"
                     sh "docker tag ${dockerHubRegistry}:${BUILD_NUMBER} ${dockerImageTag}"
-                    docker.withRegistry('https://asia-northeast3-docker.pkg.dev', GOOGLE_CREDENTIALS_ID) {
-                        docker.image(dockerImageTag).push()
+                    sh "docker push ${dockerImageTag}"
+                    // docker.withRegistry('https://asia-northeast3-docker.pkg.dev', GOOGLE_CREDENTIALS_ID) {
+                    //     docker.image(dockerImageTag).push()
                     }
                 }
             }
