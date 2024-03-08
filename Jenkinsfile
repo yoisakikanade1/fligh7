@@ -29,11 +29,41 @@ pipeline {
 
         stage('Build and Push Docker Image') {
             steps {
-                sh 'gcloud auth configure-docker --quiet'
-                sh "docker build -t $dockerHubRegistry ."
-                sh "docker push $dockerHubRegistry"
+                sh "docker build . -t ${dockerHubRegistry}:${currentBuild.number}"
+                sh "docker build . -t ${dockerHubRegistry}:latest"
+            }
+
+            post {
+                failure {
+                    echo 'Docker image build failure !'
+                }
+                success {
+                    echo 'Docker image build success !'
+                }
             }
         }
+
+        stage('Docker Image Push')
+            steps {
+                withDockerRegistry([ credentialsId: dockerHubRegistryCredential, url: ""]) {
+                    sh "docker push ${dockerHubRegistry}:${currentBuild.number}"
+                    sh "docker push ${dockerHubRegistry}:latest"
+
+                    sleep 10 /* Wait uploading */
+                }
+            }
+            post {
+                failure {
+                    echo 'Docker Image Push failure !'
+                    sh "docker rmi ${dockerHubRegistry}:${currentBuild.number}"
+                    sh "docker rmi ${dockerHubRegistry}:latest"
+                }
+                success {
+                    echo 'Docker image push success !'
+                    sh "docker rmi ${dockerHubRegistry}:${currentBuild.number}"
+                    sh "docker rmi ${dockerHubRegistry}:latest"
+                }
+            }
         stage('Update Artifact Registry') {
             steps {
                 sh "docker tag $dockerHubRegistry $ARTIFACT_REPO"
