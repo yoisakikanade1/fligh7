@@ -65,11 +65,10 @@ pipeline {
             steps {
                 script {
                     // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
-                    // def dockerImageTag = "${ARTIFACT_REPO}/yoisakikanade/fligh7:${BUILD_NUMBER}"
+                    def dockerImageTag = "${ARTIFACT_REPO}/yoisakikanade/fligh7:${BUILD_NUMBER}"
                     sh "docker tag ${dockerHubRegistry}:${BUILD_NUMBER} ${dockerImageTag}"
-                    sh "docker push ${ARTIFACT_REPO}/yoisakikanade/fligh7:${BUILD_NUMBER}"
-                    // docker.withRegistry('https://asia-northeast3-docker.pkg.dev', GOOGLE_CREDENTIALS_ID) {
-                    //     docker.image(dockerImageTag).push()
+                    docker.withRegistry('https://asia-northeast3-docker.pkg.dev', GOOGLE_CREDENTIALS_ID) {
+                        docker.image(dockerImageTag).push()
                     }
                 }
             }
