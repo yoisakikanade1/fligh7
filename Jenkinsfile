@@ -82,20 +82,20 @@ pipeline {
             }
         }
 
-        stage('Deploy to GKE 1') {
-            steps {
-                sh "gcloud container clusters get-credentials $CLUSTER_NAME_1 --zone $GCP_ZONE_1 --project $PROJECT_ID"
-                // $DEPLOYMENT_NAME 및 $CONTAINER_NAME 변수가 정의되어 있어야 합니다.
-                sh "kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=${dockerHubRegistry}:${currentBuild.number}"
-            }
-        }
-        stage('Deploy to GKE 2') {
-            steps {
-                sh "gcloud container clusters get-credentials $CLUSTER_NAME_2 --zone $GCP_ZONE_2 --project $PROJECT_ID"
-                // $DEPLOYMENT_NAME 및 $CONTAINER_NAME 변수가 정의되어 있어야 합니다.
-                sh "kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=${dockerHubRegistry}:${currentBuild.number}"
-            }
-        }
+        // stage('Deploy to GKE 1') {
+        //     steps {
+        //         sh "gcloud container clusters get-credentials $CLUSTER_NAME_1 --zone $GCP_ZONE_1 --project $PROJECT_ID"
+        //         // $DEPLOYMENT_NAME 및 $CONTAINER_NAME 변수가 정의되어 있어야 합니다.
+        //         sh "kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=${dockerHubRegistry}:${currentBuild.number}"
+        //     }
+        // }
+        // stage('Deploy to GKE 2') {
+        //     steps {
+        //         sh "gcloud container clusters get-credentials $CLUSTER_NAME_2 --zone $GCP_ZONE_2 --project $PROJECT_ID"
+        //         // $DEPLOYMENT_NAME 및 $CONTAINER_NAME 변수가 정의되어 있어야 합니다.
+        //         sh "kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=${dockerHubRegistry}:${currentBuild.number}"
+        //     }
+        // }
     }
     post {
         always {
