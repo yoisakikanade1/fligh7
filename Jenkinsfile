@@ -61,20 +61,18 @@ pipeline {
         }   
 
     
-        stages {
-            stage('Build and Push Docker Image') {
-                steps {
-                    script {
-                        def dockerImageTag = "asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}"
-                        docker.build(dockerImageTag, "-f Dockerfile .")
-                        docker.withRegistry('https://asia-northeast3-docker.pkg.dev', 'yoisakikanade1') {
-                            docker.image(dockerImageTag).push()
-                        }
+       
+        stage('Build and Push Docker Image') {
+            steps {
+                script {
+                    def dockerImageTag = "asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:${BUILD_NUMBER}"
+                    docker.build(dockerImageTag, "-f Dockerfile .")
+                    docker.withRegistry('https://asia-northeast3-docker.pkg.dev', 'yoisakikanade1') {
+                        docker.image(dockerImageTag).push()
                     }
                 }
             }
         }
-    
         post {
             success {
                 echo 'Update Artifact Registry success!'
