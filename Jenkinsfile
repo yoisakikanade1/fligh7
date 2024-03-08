@@ -61,23 +61,23 @@ pipeline {
             }
         }   
 
-        stage('Update Artifact Registry') {
+        stage('Tag and Push to Artifact Registry') {
             steps {
                 script {
+                    // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
                     def dockerImageTag = "${ARTIFACT_REPO}/yoisakikanade/fligh7:${BUILD_NUMBER}"
-                    docker.build(dockerImageTag, "-f Dockerfile .")
+                    sh "docker tag ${dockerHubRegistry}:${BUILD_NUMBER} ${dockerImageTag}"
                     docker.withRegistry('https://asia-northeast3-docker.pkg.dev', GOOGLE_CREDENTIALS_ID) {
                         docker.image(dockerImageTag).push()
                     }
                 }
             }
-        
             post {
                 success {
-                    echo 'Update Artifact Registry success!'
+                    echo 'Tag and push to Artifact Registry success!'
                 }
                 failure {
-                    echo 'Update Artifact Registry failure!'
+                    echo 'Tag and push to Artifact Registry failure!'
                 }
             }
         }
