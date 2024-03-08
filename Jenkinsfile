@@ -72,8 +72,6 @@ pipeline {
                     }
                 }
             }
-        }
-
             post {
                 success {
                     echo 'Tag and push to Artifact Registry success!'
