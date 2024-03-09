@@ -4,14 +4,14 @@ pipeline {
         dockerHubRegistry = 'yoisakikanade/fligh7'
         dockerHubRegistryCredential = 'yoisakikanade0'
         githubCredential = 'yoisakikanade'
-        gcpCredential = 'yoisakikanade1'
+        gcpCredential = credentials('yoisakikanade1')
         PROJECT_ID = 'fligh7'
         GCP_ZONE_1 = 'asia-northeast3'
         GCP_ZONE_2 = 'asia-northeast1'
         CLUSTER_NAME_1 = 'my-cluster-seoul-1'
         CLUSTER_NAME_2 = 'my-cluster-tokyo-1'
         ARTIFACT_REPO = 'asia-northeast3-docker.pkg.dev/fligh7/fligh7-image'
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('yoisakikanade1')
+        // GOOGLE_APPLICATION_CREDENTIALS = credentials('yoisakikanade1')
     }
   
     stages {
