@@ -64,10 +64,8 @@ pipeline {
 
         stage('Tag and Push to Artifact Registry') {
             steps {
-                // withARTIFACT_REPO([ credentilsId: gcpCredential, url: "" ])
-                //     sh "docker tag ${dockerHubRegistry}:${currentBuild.number} $(ARTIFACT_REPO)/yoisakikanade/fligh7:${currentBuild.number}"
-                //     sh "docker push $(ARTIFACT_REPO)/yoisakikanade/fligh7:${currentBuild.number}"                
-                    도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
+                script {
+                    // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
                     def dockerImageTag = "${ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
                     sh "docker tag ${dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}"
                     withCredentials([file(credentialsId: gcpCredential, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
