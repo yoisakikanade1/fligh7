@@ -11,7 +11,7 @@ pipeline {
         CLUSTER_NAME_1 = 'my-cluster-seoul-1'
         CLUSTER_NAME_2 = 'my-cluster-tokyo-1'
         ARTIFACT_REPO = 'asia-northeast3-docker.pkg.dev/fligh7/fligh7-image'
-        // GOOGLE_APPLICATION_CREDENTIALS = credentials('yoisakikanade1')
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('yoisakikanade1')
     }
   
     stages {
@@ -64,16 +64,16 @@ pipeline {
 
         stage('Tag and Push to Artifact Registry') {
             steps {
-                withARTIFACT_REPO([ credentilsId: gcpCredential, url: "" ])
-                    sh "docker tag ${dockerHubRegistry}:${currentBuild.number} $(ARTIFACT_REPO)/yoisakikanade/fligh7:${currentBuild.number}"
-                    sh "docker push $(ARTIFACT_REPO)/yoisakikanade/fligh7:${currentBuild.number}"                
-                    // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
-                    // def dockerImageTag = "${ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
-                    // sh "docker tag ${dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}"
-                    // withCredentials([file(credentialsId: gcpCredential, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-                    //     withEnv(["GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}"]) {
-                    //         sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
-                    //         sh "docker push ${dockerImageTag}"
+                // withARTIFACT_REPO([ credentilsId: gcpCredential, url: "" ])
+                //     sh "docker tag ${dockerHubRegistry}:${currentBuild.number} $(ARTIFACT_REPO)/yoisakikanade/fligh7:${currentBuild.number}"
+                //     sh "docker push $(ARTIFACT_REPO)/yoisakikanade/fligh7:${currentBuild.number}"                
+                    도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
+                    def dockerImageTag = "${ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
+                    sh "docker tag ${dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}"
+                    withCredentials([file(credentialsId: gcpCredential, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                        withEnv(["GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}"]) {
+                            sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
+                            sh "docker push ${dockerImageTag}"
                         }
                     }
                 }
