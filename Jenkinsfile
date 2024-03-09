@@ -68,10 +68,10 @@ pipeline {
                     // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
                     def dockerImageTag = "${ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
                     sh "docker tag ${dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}"
-                    sh "docker push ${dockerImageTag}"                    
-                    // withCredentials([file(credentialsId: gcpCredential, variable: 'GCP_CREDENTIAL_FILE')]) {
-                    //     sh "gcloud auth activate-service-account --key-file=${env.GCP_CREDENTIAL_FILE}"
-                    //     sh "docker push ${dockerImageTag}"
+                    // sh "docker push ${dockerImageTag}"                    
+                    withCredentials([file(credentialsId: gcpCredential, variable: 'GCP_CREDENTIAL_FILE')]) {
+                        // sh "gcloud auth activate-service-account --key-file=${env.GCP_CREDENTIAL_FILE}"
+                        sh "docker push ${dockerImageTag}"
                     }
                 }
             }
