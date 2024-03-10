@@ -69,14 +69,10 @@ pipeline {
                 script {
                     // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
                     def dockerImageTag = "${env.ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
-                    sh """
-                    sh "/usr/bin/gcloud auth activate-service-account --key-file=${env.GCP_CREDENTIAL_FILE}"
-                    docker tag ${env.dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}
-                    gcloud auth activate-service-account --key-file=${env.GCP_CREDENTIAL_FILE}
+                    sh "docker tag ${env.dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}"
                     sh "sudo gcloud auth configure-docker asia-northeast3-docker.pkg.dev"
-                    docker push ${dockerImageTag}
+                    sh "docker push ${dockerImageTag}"
                     docker rmi ${env.dockerHubRegistry}:${currentBuild.number}
-                    """
                 }
             }
             post {
@@ -88,6 +84,31 @@ pipeline {
                 }
             }
         }
+        
+        // stage('Tag and Push to Artifact Registry') {
+        //     steps {
+        //         script {
+        //             // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
+        //             def dockerImageTag = "${env.ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
+        //             sh """
+        //             sh "/usr/bin/gcloud auth activate-service-account --key-file=${env.GCP_CREDENTIAL_FILE}"
+        //             docker tag ${env.dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}
+        //             gcloud auth activate-service-account --key-file=${env.GCP_CREDENTIAL_FILE}
+        //             sh "sudo gcloud auth configure-docker asia-northeast3-docker.pkg.dev"
+        //             docker push ${dockerImageTag}
+        //             docker rmi ${env.dockerHubRegistry}:${currentBuild.number}
+        //             """
+        //         }
+        //     }
+        //     post {
+        //         success {
+        //             echo 'Tag and push to Artifact Registry success!'
+        //         }
+        //         failure {
+        //             echo 'Tag and push to Artifact Registry failure!'
+        //         }
+        //     }
+        // }
 
 
         // stage('Deploy to GKE 1') {
