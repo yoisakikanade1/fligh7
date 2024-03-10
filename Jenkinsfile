@@ -72,6 +72,7 @@ pipeline {
                     withCredentials([file(credentialsId: gcpCredential, variable: 'GCP_CREDENTIAL_FILE')]) {
                         // sh "gcloud auth activate-service-account --key-file=${env.GCP_CREDENTIAL_FILE}"
                         sh "docker push ${dockerImageTag}"
+                    sh "docker rmi ${dockerHubRegistry}:${currentBuild.number}"
                     }
                 }
             }
