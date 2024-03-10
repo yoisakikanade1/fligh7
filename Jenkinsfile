@@ -73,6 +73,7 @@ pipeline {
                     sh "/usr/bin/gcloud auth activate-service-account --key-file=${env.GCP_CREDENTIAL_FILE}"
                     docker tag ${env.dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}
                     gcloud auth activate-service-account --key-file=${env.GCP_CREDENTIAL_FILE}
+                    sh "sudo gcloud auth configure-docker asia-northeast3-docker.pkg.dev"
                     docker push ${dockerImageTag}
                     docker rmi ${env.dockerHubRegistry}:${currentBuild.number}
                     """
