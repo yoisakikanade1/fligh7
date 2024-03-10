@@ -13,7 +13,7 @@ pipeline {
         ARTIFACT_REPO = 'asia-northeast3-docker.pkg.dev/fligh7/fligh7-image'
         GOOGLE_APPLICATION_CREDENTIALS = credentials('yoisakikanade1')
         GCLOUD_PATH = '/usr/bin/gcloud'
-        GCP_CREDENTIAL_FILE = '/root/fligh7-jenkins-key.json'
+        GCP_CREDENTIAL_FILE = '/home/consecrator/fligh7-jenkins-key.json'
     }
   
     stages {
