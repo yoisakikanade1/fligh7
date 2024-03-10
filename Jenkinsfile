@@ -68,6 +68,7 @@ pipeline {
                     // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
                     def dockerImageTag = "${env.ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
                     sh """
+                    sh "/path/to/gcloud/bin/gcloud auth activate-service-account --key-file=${env.GCP_CREDENTIAL_FILE}"
                     docker tag ${env.dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}
                     gcloud auth activate-service-account --key-file=${env.GCP_CREDENTIAL_FILE}
                     docker push ${dockerImageTag}
