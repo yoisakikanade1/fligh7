@@ -66,15 +66,13 @@ pipeline {
             steps {
                 script {
                     // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
-                    def dockerImageTag = "${ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
-                    sh "docker tag ${dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}"
-                    withCredentials([file(credentialsId: gcpCredential, variable: 'GCP_CREDENTIAL_FILE')]) {
-                        sh """
-                        gcloud auth activate-service-account --key-file=${GCP_CREDENTIAL_FILE}
-                        docker push ${dockerImageTag}
-                        docker rmi ${dockerHubRegistry}:${currentBuild.number}
-                        """
-                    }
+                    def dockerImageTag = "${env.ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
+                    sh """
+                    docker tag ${env.dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}
+                    gcloud auth activate-service-account --key-file=${env.GCP_CREDENTIAL_FILE}
+                    docker push ${dockerImageTag}
+                    docker rmi ${env.dockerHubRegistry}:${currentBuild.number}
+                    """
                 }
             }
             post {
@@ -86,9 +84,6 @@ pipeline {
                 }
             }
         }
-
-
-
 
 
         // stage('Deploy to GKE 1') {
