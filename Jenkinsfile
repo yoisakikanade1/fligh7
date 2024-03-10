@@ -72,7 +72,7 @@ pipeline {
                     sh "docker tag ${env.dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}"
                     sh "sudo gcloud auth configure-docker asia-northeast3-docker.pkg.dev"
                     sh "docker push ${dockerImageTag}"
-                    docker rmi ${env.dockerHubRegistry}:${currentBuild.number}
+                    sh "docker rmi ${env.dockerHubRegistry}:${currentBuild.number}"  // 여기 수정
                 }
             }
             post {
