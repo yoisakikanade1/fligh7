@@ -85,46 +85,25 @@ pipeline {
             }
         }
         
-        // stage('Tag and Push to Artifact Registry') {
-        //     steps {
-        //         script {
-        //             // 도커 허브에 푸시한 이미지를 Artifact Registry에 태깅하고 푸시
-        //             def dockerImageTag = "${env.ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"
-        //             sh """
-        //             sh "/usr/bin/gcloud auth activate-service-account --key-file=${env.GCP_CREDENTIAL_FILE}"
-        //             docker tag ${env.dockerHubRegistry}:${currentBuild.number} ${dockerImageTag}
-        //             gcloud auth activate-service-account --key-file=${env.GCP_CREDENTIAL_FILE}
-        //             sh "sudo gcloud auth configure-docker asia-northeast3-docker.pkg.dev"
-        //             docker push ${dockerImageTag}
-        //             docker rmi ${env.dockerHubRegistry}:${currentBuild.number}
-        //             """
-        //         }
-        //     }
-        //     post {
-        //         success {
-        //             echo 'Tag and push to Artifact Registry success!'
-        //         }
-        //         failure {
-        //             echo 'Tag and push to Artifact Registry failure!'
-        //         }
-        //     }
-        // }
+        stage('Deploy to GKE') {
+            steps {
+                script {
+                    // 현재 배포된 Deployment의 이미지를 업데이트합니다.
+                    sh "kubectl set image deployment/${deploymentName} *=${dockerImageTag} --namespace=${kubernetesNamespace}"
+                }
+            }
+            post {
+                success {
+                    echo 'Deployment to GKE success!'
+                }
+                failure {
+                    echo 'Deployment to GKE failure!'
+                }
+            }
+        }
 
 
-        // stage('Deploy to GKE 1') {
-        //     steps {
-        //         sh "gcloud container clusters get-credentials $CLUSTER_NAME_1 --zone $GCP_ZONE_1 --project $PROJECT_ID"
-        //         // $DEPLOYMENT_NAME 및 $CONTAINER_NAME 변수가 정의되어 있어야 합니다.
-        //         sh "kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=${dockerHubRegistry}:${currentBuild.number}"
-        //     }
-        // }
-        // stage('Deploy to GKE 2') {
-        //     steps {
-        //         sh "gcloud container clusters get-credentials $CLUSTER_NAME_2 --zone $GCP_ZONE_2 --project $PROJECT_ID"
-        //         // $DEPLOYMENT_NAME 및 $CONTAINER_NAME 변수가 정의되어 있어야 합니다.
-        //         sh "kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=${dockerHubRegistry}:${currentBuild.number}"
-        //     }
-        // }
+
     }
     post {
         always {
