@@ -78,6 +78,7 @@ pipeline {
                     sh "docker push ${dockerImageTag}"
                     sh "docker push ${env.ARTIFACT_REPO}/yoisakikanade/fligh7:latest"
                     sh "docker rmi ${env.dockerHubRegistry}:${currentBuild.number}"
+                    sh "docker rmi ${dockerImageTag}"
                 }
             }
             post {
