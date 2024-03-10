@@ -14,6 +14,9 @@ pipeline {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('yoisakikanade1')
         GCLOUD_PATH = '/usr/bin/gcloud'
         GCP_CREDENTIAL_FILE = '/home/consecrator/fligh7-jenkins-key.json'
+        kubernetesNamespace = "default"  // 배포할 Deployment가 있는 네임스페이스를 지정합니다.
+        deploymentjobName = "kubernetes-manifests-deployer-job"  // 새 배포를 위한 job의 이름을 지정합니다.
+        dockerImageTag = "${env.ARTIFACT_REPO}/yoisakikanade/fligh7:${currentBuild.number}"  // Artifact Registry에 업로드된 이미지의 태그를 지정합니다.
     }
   
     stages {
@@ -89,7 +92,7 @@ pipeline {
             steps {
                 script {
                     // 현재 배포된 Deployment의 이미지를 업데이트합니다.
-                    sh "kubectl set image deployment/${deploymentName} *=${dockerImageTag} --namespace=${kubernetesNamespace}"
+                    sh "kubectl set image job/${deploymentjobName} *=${dockerImageTag} --namespace=${kubernetesNamespace}"
                 }
             }
             post {
