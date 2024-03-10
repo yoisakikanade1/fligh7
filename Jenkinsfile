@@ -86,6 +86,7 @@ pipeline {
         }
 
 
+
         // stage('Deploy to GKE 1') {
         //     steps {
         //         sh "gcloud container clusters get-credentials $CLUSTER_NAME_1 --zone $GCP_ZONE_1 --project $PROJECT_ID"
