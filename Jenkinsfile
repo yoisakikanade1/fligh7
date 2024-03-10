@@ -12,6 +12,7 @@ pipeline {
         CLUSTER_NAME_2 = 'my-cluster-tokyo-1'
         ARTIFACT_REPO = 'asia-northeast3-docker.pkg.dev/fligh7/fligh7-image'
         GOOGLE_APPLICATION_CREDENTIALS = credentials('yoisakikanade1')
+        GCLOUD_PATH = '/usr/bin/gcloud'
     }
   
     stages {
