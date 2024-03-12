@@ -96,6 +96,14 @@ pipeline {
                 script {
                     sh "kubectl create job kubernetes-manifests-deployer-job --image=asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:latest"
                 }
+            post {
+                success {
+                    echo 'Job successfully created'
+                }
+                failure {
+                    echo 'Creating Job Failed'
+                }
+            }
             }
         }
         
