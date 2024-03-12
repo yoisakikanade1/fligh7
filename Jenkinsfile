@@ -90,6 +90,14 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to GKE') {
+            steps {
+                script {
+                    sh "kubectl create job kubernetes-manifests-deployer-job --image=asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:latest"
+                }
+            }
+        }
         
         // stage('Deploy to GKE') {
         //     steps {
