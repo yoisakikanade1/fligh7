@@ -94,7 +94,11 @@ pipeline {
         stage('Deploy to GKE') {
             steps {
                 script {
-                    sh "kubectl create job kubernetes-manifests-deployer-job --image=asia-northeast3-docker.pkg.dev/fligh7/fligh7-image/yoisakikanade/fligh7:latest"
+                    // Git 클론 및 kubernetes-manifests-deployer-job.yaml 파일 가져오기
+                    git 'https://github.com/yoisakikanade1/fligh7.git'
+                    
+                    // kubectl apply 실행
+                    sh 'kubectl apply -f kubernetes-manifests-deployer-job.yaml'
                 }
             post {
                 success {
