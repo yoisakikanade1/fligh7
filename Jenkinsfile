@@ -107,7 +107,7 @@ pipeline {
                         sh "git add kubernetes-manifests-deployer-job.yaml"
                         // sh "git commit -m '[UPDATE] kanade ${currentBuild.number} image versioning'"
                         // Git 클론 및 kubernetes-manifests-deployer-job.yaml 파일 가져오기
-                        git 'https://github.com/yoisakikanade1/fligh7.git'
+                        // git 'https://github.com/yoisakikanade1/fligh7.git'
                         // kubectl apply 실행
                         sh 'kubectl apply -f kubernetes-manifests-deployer-job.yaml'
                     }
