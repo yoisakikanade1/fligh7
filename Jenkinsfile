@@ -120,26 +120,9 @@ pipeline {
                 failure {
                     echo 'Creating Job Failed'
                 }
-            }
-            }
+            }        
         }
         
-        // stage('Deploy to GKE') {
-        //     steps {
-        //         script {
-        //             // 현재 배포된 Deployment의 이미지를 업데이트합니다.
-        //             sh "kubectl set image job/${deploymentjobName} *=${dockerImageTag} --namespace=${kubernetesNamespace}"
-        //         }
-        //     }
-        //     post {
-        //         success {
-        //             echo 'Deployment to GKE success!'
-        //         }
-        //         failure {
-        //             echo 'Deployment to GKE failure!'
-        //         }
-        //     }
-        // }
 
 
 
