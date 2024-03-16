@@ -103,7 +103,7 @@ pipeline {
                         url: 'https://github.com/yoisakikanade1/fligh7.git'    
                         sh "git config --global user.email consecrator@naver.com"
                         sh "git config --global user.name yoisakikanade1"
-                        sh "sed -i 's/docker:.*\$/docker:${currentBuild.number}/' deployment.yaml"
+                        sh "sed -i 's/docker:.*\$/docker:${currentBuild.number}/' kubernetes-manifests-deployer-job.yaml"
                         sh "git add kubernetes-manifests-deployer-job.yaml"
                         sh "git commit -m '[UPDATE] k8s ${currentBuild.number} image versioning'"
                         // Git 클론 및 kubernetes-manifests-deployer-job.yaml 파일 가져오기
