@@ -96,7 +96,7 @@ pipeline {
                 script {
                     sh "ls"
                     // sh 'mkdir -p gitOpsRepo'
-                    dir("")
+                    dir("jenkins-pipeline")
                     {
                         git branch: "main",
                         credentialsId: githubCredential,
