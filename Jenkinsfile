@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    tools {
+        // Jenkins에 정의된 git 툴 사용
+        git 'Git'
+    }
     environment {
         dockerHubRegistry = 'yoisakikanade/fligh7'
         dockerHubRegistryCredential = 'yoisakikanade0'
