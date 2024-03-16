@@ -95,8 +95,8 @@ pipeline {
             steps {
                 script {
                     sh "ls"
-                    sh 'mkdir -p gitOpsRepo'
-                    dir("gitOpsRepo")
+                    // sh 'mkdir -p gitOpsRepo'
+                    dir("")
                     {
                         git branch: "main",
                         credentialsId: githubCredential,
@@ -109,7 +109,7 @@ pipeline {
                         // Git 클론 및 kubernetes-manifests-deployer-job.yaml 파일 가져오기
                         // git 'https://github.com/yoisakikanade1/fligh7.git'
                         // kubectl apply 실행
-                        sh 'kubectl apply -f kubernetes-manifests-deployer-job.yaml'
+                        // sh 'kubectl apply -f kubernetes-manifests-deployer-job.yaml'
                     }
                 }
             }
