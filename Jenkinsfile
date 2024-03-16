@@ -125,7 +125,7 @@ pipeline {
     }
     post {
         always {
-            echo 'Deployment completed'
+            echo 'Image UPDATE completed'
         }
     }
 }
